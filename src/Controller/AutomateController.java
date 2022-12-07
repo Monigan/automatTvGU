@@ -1,16 +1,30 @@
 package Controller;
 
+import Entity.AutomateEntity;
 import Entity.TovarEntity;
 import java.util.List;
 
-public interface AutomateController {
-  void makeAutomate(String name, List<TovarEntity> tovarList);
+public class AutomateController {
+  AutomateEntity automate;
+  boolean hasMonet = false;
 
-  List<TovarEntity> getTovarList();
+  public void makeAutomate(String name, List<TovarEntity> tovarList) {
+    this.automate = new AutomateEntity(name, tovarList);
+  }
 
-  boolean hasTovar(int index);
+  public List<TovarEntity> getTovarList() {
+    return automate.getTovarList();
+  }
 
-  boolean hasMonet();
+  public boolean hasTovar(int index) {
+    return automate.getTovarList().get(index).getValue() != 0;
+  }
 
-  void putMoney(boolean hasMonet);
+  public boolean hasMonet() {
+    return hasMonet;
+  }
+
+  public void putMoney(boolean hasMonet) {
+    this.hasMonet = hasMonet;
+  }
 }

@@ -1,16 +1,14 @@
 package Interface;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class MyFrame extends JFrame {
-  MyPanel myPanel;
-  private JPanel mainPanel;
+  private MyPanel myPanel;
 
-  public MyFrame(MyPanel panel) {
-    myPanel = panel;
-    add(myPanel);
-    setContentPane(myPanel);
+  public MyFrame(MyPanel myPanel) {
+    this.myPanel = myPanel;
+    add(this.myPanel);
+    setContentPane(this.myPanel);
     setSize(500, 500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }

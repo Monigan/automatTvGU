@@ -1,7 +1,9 @@
 package Interface;
 
 import Controller.AutomateController;
-import Controller.AutomateControllerImpl;
+import States.HasMoneyState;
+import States.HasState;
+import States.HasTovarState;
 import Storage.TovarStorage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 
 public class MyPanel extends JPanel {
   private JPanel corePanel;
@@ -18,17 +21,20 @@ public class MyPanel extends JPanel {
   private JPanel buyPanel;
   private JPanel putPanel;
   private JRadioButton putMoneyRadioButton;
+  private JTextArea resultLabel;
+  private JPanel resultPanel;
 
-  AutomateController automateController = new AutomateControllerImpl();
+  AutomateController automateController = new AutomateController();
+  HasState moneyState = new HasMoneyState(automateController);
+  HasState tovarState = new HasTovarState(automateController);
   TovarStorage tovarStorage = new TovarStorage();
 
   public MyPanel() {
-//        setModal(true);
     add(corePanel);
     putButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (automateController.hasMonet()) {
+        if (moneyState.hasState()) {
           automateController.makeAutomate("ТверьЕда", tovarStorage.getList());
           putPanel.setVisible(false);
 
@@ -36,8 +42,10 @@ public class MyPanel extends JPanel {
           buyPanel.setVisible(true);
 
           onPutButton();
-        } else {
-          callDialog("Не вставлена монетка!");
+        }
+        else{
+          putPanel.setVisible(false);
+          resultLabel.setText("Вы не внесли монетку");
         }
       }
     });
@@ -45,10 +53,13 @@ public class MyPanel extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         int index = tovarListBox.getSelectedIndex();
-        if (!automateController.hasTovar(index)) {
-          callDialog("Товар закончился!");
+        buyPanel.setVisible(false);
+        if (!tovarState.hasState(index)) {
+          resultLabel.setText("Товара нет");
         }
-        callDialog("Товар куплен!");
+        else{
+          resultLabel.setText("Вы купили товар");
+        }
       }
     });
     putMoneyRadioButton.addActionListener(new ActionListener() {
@@ -65,17 +76,8 @@ public class MyPanel extends JPanel {
 
   void onPutButton() {
     for (int i = 0; i < automateController.getTovarList().size(); i++) {
-      tovarListBox.addItem(
-          automateController.getTovarList().get(i).getName()
-              + " " +
-              automateController.getTovarList().get(i).getCoast());
+      tovarListBox.addItem(automateController.getTovarList().get(i).getName() + " " +
+          automateController.getTovarList().get(i).getCoast());
     }
-  }
-
-  void callDialog(String result) {
-    SellDialog dialog = new SellDialog(result);
-    dialog.pack();
-    dialog.setVisible(true);
-    System.exit(0);
   }
 }
